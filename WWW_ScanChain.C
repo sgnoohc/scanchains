@@ -225,98 +225,96 @@ void fillHistogramsFull(
         return;
 
     TString fullprefix = sample_category + "_" + bkg_category + "_" + prefix + "_";
-    //fillLepHistograms( hists, "SignalLepton" , ""      , fullprefix );
-    //fillLepHistograms( hists, "3LTightLepton", ""      , fullprefix );
-    //fillLepHistograms( hists, "TightLepton"  , "tight" , fullprefix );
-    fillLepHistograms( hists, "LooseLepton"  , "loose" , fullprefix );
-    //fillLepHistograms( hists, "LbntLepton"   , "lbnt"  , fullprefix );
-    //fillLepHistograms( hists, "Lbn3tLepton"  , "lbn3t" , fullprefix );
-    fillJetHistograms( hists, "GoodSSJet"    , ""      , fullprefix );
-    fillJetHistograms( hists, "LooseBJet"    , "b"     , fullprefix );
-    fillJetHistograms( hists, "Good3LJet"    , "3l"    , fullprefix );
-    fillJetHistograms( hists, "GoodSSWJet"   , "wtag"  , fullprefix );
-    fillWWWHistograms( hists, fullprefix );
+    fillLepHistograms( hists, "LooseLepton"  , "loose" , fullprefix, isyst );
+    fillJetHistograms( hists, "GoodSSJet"    , ""      , fullprefix, isyst );
+    fillJetHistograms( hists, "LooseBJet"    , "b"     , fullprefix, isyst );
+    fillJetHistograms( hists, "Good3LJet"    , "3l"    , fullprefix, isyst );
+    fillJetHistograms( hists, "GoodSSWJet"   , "wtag"  , fullprefix, isyst );
+    fillWWWHistograms( hists, fullprefix, isyst );
 
 }
 
 //_________________________________________________________________________________________________
-void fillLepHistograms( RooUtil::AutoHist& hists, TString categ, TString name, TString prefix )
+void fillLepHistograms( RooUtil::AutoHist& hists, TString categ, TString name, TString prefix, int isyst )
 {
     bool ff = prefix.Contains( "Pred" );
-    hists.fill( lepidx[categ].size() , Form( "%slep%s_size" , prefix.Data(), name.Data() ), weight( ff ), 5, 0, 5 );
+    double wgt = weight( ff, isyst );
+    hists.fill( lepidx[categ].size(), isyst, Form( "%slep%s_size" , prefix.Data(), name.Data() ), wgt, 5, 0, 5, NSYST, 0, NSYST );
     for ( unsigned int i = 0; i < lepidx[categ].size() && i < MAXOBJ; ++i )
     {
         int ilep = lepidx[categ][i];
-        hists.fill( wwwbaby.lep_pdgId()[ilep]      , Form( "%slep%s%d_pid"       , prefix.Data(), name.Data(), i ), weight( ff ),   40,  -20     ,  20      );
-        hists.fill( wwwbaby.lep_p4()[ilep].pt()    , Form( "%slep%s%d_pt"        , prefix.Data(), name.Data(), i ), weight( ff ), 1080,    0     , 250.     );
-        hists.fill( wwwbaby.lep_p4()[ilep].eta()   , Form( "%slep%s%d_eta"       , prefix.Data(), name.Data(), i ), weight( ff ), 1080,   -3     ,   3      );
-        hists.fill( wwwbaby.lep_p4()[ilep].phi()   , Form( "%slep%s%d_phi"       , prefix.Data(), name.Data(), i ), weight( ff ), 1080,   -3.1416,   3.1416 );
-        hists.fill( wwwbaby.lep_p4()[ilep].energy(), Form( "%slep%s%d_E"         , prefix.Data(), name.Data(), i ), weight( ff ), 1080,    0     , 250.     );
-        hists.fill( wwwbaby.lep_relIso03EA()[ilep] , Form( "%slep%s%d_iso"       , prefix.Data(), name.Data(), i ), weight( ff ), 1080,    0     ,   0.1    );
-        hists.fill( wwwbaby.lep_ip3d()[ilep]       , Form( "%slep%s%d_ip3"       , prefix.Data(), name.Data(), i ), weight( ff ), 1080,   -0.05  ,   0.05   );
-        hists.fill( wwwbaby.lep_ip3derr()[ilep]    , Form( "%slep%s%d_ip3err"    , prefix.Data(), name.Data(), i ), weight( ff ), 1080,   -0.5   ,   0.5    );
-        hists.fill( wwwbaby.lep_ip3d()[ilep]       , Form( "%slep%s%d_ip3_wide"  , prefix.Data(), name.Data(), i ), weight( ff ), 1080,   -0.5   ,   0.5    );
-        hists.fill( wwwbaby.lep_ip3d()[ilep]       , Form( "%slep%s%d_ip3_widepp", prefix.Data(), name.Data(), i ), weight( ff ), 1080,   -2.5   ,   2.5    );
-        hists.fill( wwwbaby.lep_ip3d()[ilep]       , Form( "%slep%s%d_ip3calc"   , prefix.Data(), name.Data(), i ), weight( ff ), 1080,   -0.05  ,   0.05   );
-        hists.fill( wwwbaby.lep_dxy ()[ilep]       , Form( "%slep%s%d_dxy"       , prefix.Data(), name.Data(), i ), weight( ff ), 1080,   -0.5   ,   0.5    );
-        hists.fill( wwwbaby.lep_dz  ()[ilep]       , Form( "%slep%s%d_dz"        , prefix.Data(), name.Data(), i ), weight( ff ), 1080,   -0.5   ,   0.5    );
+        hists.fill( wwwbaby.lep_pdgId()[ilep]      , isyst , Form( "%slep%s%d_pid"       , prefix.Data(), name.Data(), i ), wgt,   40,  -20     ,  20      , NSYST, 0, NSYST );
+        hists.fill( wwwbaby.lep_p4()[ilep].pt()    , isyst , Form( "%slep%s%d_pt"        , prefix.Data(), name.Data(), i ), wgt, 1080,    0     , 250.     , NSYST, 0, NSYST );
+        hists.fill( wwwbaby.lep_p4()[ilep].eta()   , isyst , Form( "%slep%s%d_eta"       , prefix.Data(), name.Data(), i ), wgt, 1080,   -3     ,   3      , NSYST, 0, NSYST );
+        hists.fill( wwwbaby.lep_p4()[ilep].phi()   , isyst , Form( "%slep%s%d_phi"       , prefix.Data(), name.Data(), i ), wgt, 1080,   -3.1416,   3.1416 , NSYST, 0, NSYST );
+        hists.fill( wwwbaby.lep_p4()[ilep].energy(), isyst , Form( "%slep%s%d_E"         , prefix.Data(), name.Data(), i ), wgt, 1080,    0     , 250.     , NSYST, 0, NSYST );
+        hists.fill( wwwbaby.lep_relIso03EA()[ilep] , isyst , Form( "%slep%s%d_iso"       , prefix.Data(), name.Data(), i ), wgt, 1080,    0     ,   0.1    , NSYST, 0, NSYST );
+        hists.fill( wwwbaby.lep_ip3d()[ilep]       , isyst , Form( "%slep%s%d_ip3"       , prefix.Data(), name.Data(), i ), wgt, 1080,   -0.05  ,   0.05   , NSYST, 0, NSYST );
+        hists.fill( wwwbaby.lep_ip3derr()[ilep]    , isyst , Form( "%slep%s%d_ip3err"    , prefix.Data(), name.Data(), i ), wgt, 1080,   -0.5   ,   0.5    , NSYST, 0, NSYST );
+        hists.fill( wwwbaby.lep_ip3d()[ilep]       , isyst , Form( "%slep%s%d_ip3_wide"  , prefix.Data(), name.Data(), i ), wgt, 1080,   -0.5   ,   0.5    , NSYST, 0, NSYST );
+        hists.fill( wwwbaby.lep_ip3d()[ilep]       , isyst , Form( "%slep%s%d_ip3_widepp", prefix.Data(), name.Data(), i ), wgt, 1080,   -2.5   ,   2.5    , NSYST, 0, NSYST );
+        hists.fill( wwwbaby.lep_ip3d()[ilep]       , isyst , Form( "%slep%s%d_ip3calc"   , prefix.Data(), name.Data(), i ), wgt, 1080,   -0.05  ,   0.05   , NSYST, 0, NSYST );
+        hists.fill( wwwbaby.lep_dxy ()[ilep]       , isyst , Form( "%slep%s%d_dxy"       , prefix.Data(), name.Data(), i ), wgt, 1080,   -0.5   ,   0.5    , NSYST, 0, NSYST );
+        hists.fill( wwwbaby.lep_dz  ()[ilep]       , isyst , Form( "%slep%s%d_dz"        , prefix.Data(), name.Data(), i ), wgt, 1080,   -0.5   ,   0.5    , NSYST, 0, NSYST );
         if ( wwwbaby.lep_ip3d()[ilep] > 0.5 )
             std::cout << wwwbaby.lep_ip3d()[ilep] << std::endl;
     }
 }
 
 //_________________________________________________________________________________________________
-void fillJetHistograms( RooUtil::AutoHist& hists, TString categ, TString name, TString prefix )
+void fillJetHistograms( RooUtil::AutoHist& hists, TString categ, TString name, TString prefix, int isyst )
 {
     bool ff = prefix.Contains( "Pred" );
-    hists.fill( jetidx[categ].size() , Form( "%sjet%s_size" , prefix.Data(), name.Data() ), weight( ff ), 5, 0, 5 );
+    double wgt = weight( ff, isyst );
+    hists.fill( jetidx[categ].size(), isyst, Form( "%sjet%s_size" , prefix.Data(), name.Data() ), wgt, 5, 0, 5, NSYST, 0, NSYST );
     for ( unsigned int i = 0; i < jetidx[categ].size() && i < MAXOBJ; ++i )
     {
         int ijet = jetidx[categ][i];
-        hists.fill( wwwbaby.jets_p4()[ijet].pt()    , Form( "%sjet%s%d_pt" , prefix.Data(), name.Data(), i ), weight( ff ), 180,  0     , 180      );
-        hists.fill( wwwbaby.jets_p4()[ijet].eta()   , Form( "%sjet%s%d_eta", prefix.Data(), name.Data(), i ), weight( ff ), 180, -3     ,   3      );
-        hists.fill( wwwbaby.jets_p4()[ijet].phi()   , Form( "%sjet%s%d_phi", prefix.Data(), name.Data(), i ), weight( ff ), 180, -3.1416,   3.1416 );
-        hists.fill( wwwbaby.jets_p4()[ijet].energy(), Form( "%sjet%s%d_E"  , prefix.Data(), name.Data(), i ), weight( ff ), 180,  0     , 250      );
-        hists.fill( wwwbaby.jets_csv()[ijet]        , Form( "%sjet%s%d_csv", prefix.Data(), name.Data(), i ), weight( ff ), 180, -1     ,   1      );
+        hists.fill( wwwbaby.jets_p4()[ijet].pt()    , isyst, Form( "%sjet%s%d_pt" , prefix.Data(), name.Data(), i ), wgt, 180,  0     , 180     , NSYST, 0, NSYST );
+        hists.fill( wwwbaby.jets_p4()[ijet].eta()   , isyst, Form( "%sjet%s%d_eta", prefix.Data(), name.Data(), i ), wgt, 180, -3     ,   3     , NSYST, 0, NSYST );
+        hists.fill( wwwbaby.jets_p4()[ijet].phi()   , isyst, Form( "%sjet%s%d_phi", prefix.Data(), name.Data(), i ), wgt, 180, -3.1416,   3.1416, NSYST, 0, NSYST );
+        hists.fill( wwwbaby.jets_p4()[ijet].energy(), isyst, Form( "%sjet%s%d_E"  , prefix.Data(), name.Data(), i ), wgt, 180,  0     , 250     , NSYST, 0, NSYST );
+        hists.fill( wwwbaby.jets_csv()[ijet]        , isyst, Form( "%sjet%s%d_csv", prefix.Data(), name.Data(), i ), wgt, 180, -1     ,   1     , NSYST, 0, NSYST );
     }
 }
 
 //_________________________________________________________________________________________________
-void fillWWWHistograms( RooUtil::AutoHist& hists, TString prefix )
+void fillWWWHistograms( RooUtil::AutoHist& hists, TString prefix, int isyst )
 {
     bool ff = prefix.Contains( "Pred" );
-    hists.fill( wwwbaby.met_pt()                                  , Form( "%smet"        , prefix.Data() ) , weight( ff ) , 180 , 0. , 250.   );
-    hists.fill( MjjW()                                            , Form( "%sMjjW"       , prefix.Data() ) , weight( ff ) , 180 , 0. , 160.   );
-    hists.fill( MjjLead()                                         , Form( "%sMjjLead"    , prefix.Data() ) , weight( ff ) , 180 , 0. , 800.   );
-    hists.fill( DEtajjLead()                                      , Form( "%sDEtajjLead" , prefix.Data() ) , weight( ff ) , 180 , 0. , 9.     );
-    hists.fill( DPhill()                                          , Form( "%sDPhill"     , prefix.Data() ) , weight( ff ) , 180 , 0. , 3.1416 );
-    hists.fill( DEtall()                                          , Form( "%sDEtall"     , prefix.Data() ) , weight( ff ) , 180 , 0. , 9.     );
-    hists.fill( Mll()                                             , Form( "%sMll"        , prefix.Data() ) , weight( ff ) , 180 , 0. , 180.   );
-    hists.fill( Mll()                                             , Form( "%sMll250"     , prefix.Data() ) , weight( ff ) , 180 , 0. , 250.   );
-    hists.fill( Mll()                                             , Form( "%sMll500"     , prefix.Data() ) , weight( ff ) , 180 , 0. , 500.   );
-    hists.fill( MTmax()                                           , Form( "%sMTmax"      , prefix.Data() ) , weight( ff ) , 180 , 0. , 180.   );
-    hists.fill( M4()                                              , Form( "%sm4"         , prefix.Data() ) , weight( ff ) , 180 , 0. , 180.   );
-    hists.fill( M4()                                              , Form( "%sm4wide"     , prefix.Data() ) , weight( ff ) , 150 , 0. , 1500.  );
-    hists.fill( wwwbaby.nisoTrack_mt2_cleaned_VVV_cutbased_veto() , Form( "%snisotrack"  , prefix.Data() ) , weight( ff ) , 5   , 0  , 5      );
-    hists.fill( wwwbaby.nlep_VVV_cutbased_veto()                  , Form( "%snvetolep"   , prefix.Data() ) , weight( ff ) , 5   , 0  , 5      );
-    hists.fill( wwwbaby.nVert()                                   , Form( "%snvtx"       , prefix.Data() ) , weight( ff ) , 70  , 0  , 70.    );
+    double wgt = weight( ff, isyst );
+    hists.fill( wwwbaby.met_pt()                                 , isyst , Form( "%smet"        , prefix.Data() ) , wgt , 180 , 0. , 250.  , NSYST, 0, NSYST );
+    hists.fill( MjjW()                                           , isyst , Form( "%sMjjW"       , prefix.Data() ) , wgt , 180 , 0. , 160.  , NSYST, 0, NSYST );
+    hists.fill( MjjLead()                                        , isyst , Form( "%sMjjLead"    , prefix.Data() ) , wgt , 180 , 0. , 800.  , NSYST, 0, NSYST );
+    hists.fill( DEtajjLead()                                     , isyst , Form( "%sDEtajjLead" , prefix.Data() ) , wgt , 180 , 0. , 9.    , NSYST, 0, NSYST );
+    hists.fill( DPhill()                                         , isyst , Form( "%sDPhill"     , prefix.Data() ) , wgt , 180 , 0. , 3.1416, NSYST, 0, NSYST );
+    hists.fill( DEtall()                                         , isyst , Form( "%sDEtall"     , prefix.Data() ) , wgt , 180 , 0. , 9.    , NSYST, 0, NSYST );
+    hists.fill( Mll()                                            , isyst , Form( "%sMll"        , prefix.Data() ) , wgt , 180 , 0. , 180.  , NSYST, 0, NSYST );
+    hists.fill( Mll()                                            , isyst , Form( "%sMll250"     , prefix.Data() ) , wgt , 180 , 0. , 250.  , NSYST, 0, NSYST );
+    hists.fill( Mll()                                            , isyst , Form( "%sMll500"     , prefix.Data() ) , wgt , 180 , 0. , 500.  , NSYST, 0, NSYST );
+    hists.fill( MTmax()                                          , isyst , Form( "%sMTmax"      , prefix.Data() ) , wgt , 180 , 0. , 180.  , NSYST, 0, NSYST );
+    hists.fill( M4()                                             , isyst , Form( "%sm4"         , prefix.Data() ) , wgt , 180 , 0. , 180.  , NSYST, 0, NSYST );
+    hists.fill( M4()                                             , isyst , Form( "%sm4wide"     , prefix.Data() ) , wgt , 150 , 0. , 1500. , NSYST, 0, NSYST );
+    hists.fill( wwwbaby.nisoTrack_mt2_cleaned_VVV_cutbased_veto(), isyst , Form( "%snisotrack"  , prefix.Data() ) , wgt , 5   , 0  , 5     , NSYST, 0, NSYST );
+    hists.fill( wwwbaby.nlep_VVV_cutbased_veto()                 , isyst , Form( "%snvetolep"   , prefix.Data() ) , wgt , 5   , 0  , 5     , NSYST, 0, NSYST );
+    hists.fill( wwwbaby.nVert()                                  , isyst , Form( "%snvtx"       , prefix.Data() ) , wgt , 70  , 0  , 70.   , NSYST, 0, NSYST );
     if ( lepidx["3LTightLepton"].size() == 3 )
     {
-        hists.fill( Pt3l()           , Form( "%sPt3l"         , prefix.Data() ) , weight( ff ) , 180 , 0. , 180.   );
-        hists.fill( DPhi3lMET()      , Form( "%sDPhi3lMET"    , prefix.Data() ) , weight( ff ) , 180 , 0. , 3.1416 );
+        hists.fill( Pt3l()     , isyst, Form( "%sPt3l"         , prefix.Data() ) , wgt , 180 , 0. , 180.  , NSYST, 0, NSYST );
+        hists.fill( DPhi3lMET(), isyst, Form( "%sDPhi3lMET"    , prefix.Data() ) , wgt , 180 , 0. , 3.1416, NSYST, 0, NSYST );
         if ( pass3L0SFOS() )
         {
-            hists.fill( get0SFOSMll()    , Form( "%sget0SFOSMll"  , prefix.Data() ) , weight( ff ) , 180 , 0. , 180.   );
-            hists.fill( get0SFOSMee()    , Form( "%sget0SFOSMee"  , prefix.Data() ) , weight( ff ) , 180 , 0. , 180.   );
+            hists.fill( get0SFOSMll(), isyst, Form( "%sget0SFOSMll"  , prefix.Data() ) , wgt , 180 , 0. , 180., NSYST, 0, NSYST );
+            hists.fill( get0SFOSMee(), isyst, Form( "%sget0SFOSMee"  , prefix.Data() ) , wgt , 180 , 0. , 180., NSYST, 0, NSYST );
         }
         if ( pass3L1SFOS() )
         {
-            hists.fill( get1SFOSMll()    , Form( "%sget1SFOSMll"  , prefix.Data() ) , weight( ff ) , 180 , 0. , 180.   );
+            hists.fill( get1SFOSMll(), isyst, Form( "%sget1SFOSMll"  , prefix.Data() ) , wgt , 180 , 0. , 180., NSYST, 0, NSYST );
         }
         if ( pass3L2SFOS() )
         {
-            hists.fill( get2SFOSMll0()   , Form( "%sget2SFOSMll0" , prefix.Data() ) , weight( ff ) , 180 , 0. , 180.   );
-            hists.fill( get2SFOSMll1()   , Form( "%sget2SFOSMll1" , prefix.Data() ) , weight( ff ) , 180 , 0. , 180.   );
+            hists.fill( get2SFOSMll0(), isyst, Form( "%sget2SFOSMll0" , prefix.Data() ) , wgt , 180 , 0. , 180., NSYST, 0, NSYST );
+            hists.fill( get2SFOSMll1(), isyst, Form( "%sget2SFOSMll1" , prefix.Data() ) , wgt , 180 , 0. , 180., NSYST, 0, NSYST );
         }
     }
 }

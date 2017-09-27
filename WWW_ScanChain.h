@@ -22,9 +22,9 @@ bool doAnalysis( RooUtil::AutoHist& );
 
 void fillHistograms( bool& passed, RooUtil::AutoHist&, TString, int regionid, int isyst );
 void fillHistogramsFull( RooUtil::AutoHist&, TString, TString, TString, int regionid, int isyst );
-void fillLepHistograms( RooUtil::AutoHist&, TString, TString, TString );
-void fillJetHistograms( RooUtil::AutoHist&, TString, TString, TString );
-void fillWWWHistograms( RooUtil::AutoHist&, TString );
+void fillLepHistograms( RooUtil::AutoHist&, TString, TString, TString, int );
+void fillJetHistograms( RooUtil::AutoHist&, TString, TString, TString, int );
+void fillWWWHistograms( RooUtil::AutoHist&, TString, int );
 
 void printevent( TString );
 
