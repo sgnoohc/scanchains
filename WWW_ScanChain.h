@@ -18,9 +18,9 @@ using namespace RooUtil;
 
 void ScanChain( TChain* chain, TString output_name, TString optstr, int nevents = -1 ); // the default nevents=-1 option means loop over all events.
 
-bool doAnalysis( RooUtil::AutoHist& );
+bool doAnalysis( RooUtil::AutoHist&, bool doskim );
 
-void fillHistograms( bool& passed, RooUtil::AutoHist&, TString, int regionid, int isyst );
+void fillHistograms( RooUtil::AutoHist&, TString, int regionid, int isyst );
 void fillHistogramsFull( RooUtil::AutoHist&, TString, TString, TString, int regionid, int isyst );
 void fillLepHistograms( RooUtil::AutoHist&, TString, TString, TString, int );
 void fillJetHistograms( RooUtil::AutoHist&, TString, TString, TString, int );
