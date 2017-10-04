@@ -5,6 +5,7 @@
 #include "rooutil/looper.h"
 #include "rooutil/autohist.h"
 #include "rooutil/eventlist.h"
+#include "rooutil/ttreex.h"
 #include "WWW_CORE/WWWTree.h"
 #include "WWW_CORE/WWWTools.h"
 

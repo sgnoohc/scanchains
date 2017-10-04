@@ -30,6 +30,7 @@ void ScanChain( TChain* chain, TString output_name, TString base_optstr, int nev
     // Set output
     // -~-~-~-~-~
     RooUtil::AutoHist hists;
+    RooUtil::TTreeX tx;
 
     // -~-~-~-~-~-~
     // Set skimming
@@ -47,8 +48,19 @@ void ScanChain( TChain* chain, TString output_name, TString base_optstr, int nev
         }
 
         setObjectIndices();
-
-        if ( doAnalysis( hists, doskim ) ) if ( doskim ) looper.fillSkim();
+        if ( doAnalysis( hists, doskim ) )
+            if ( doskim )
+            {
+                if (!tx.getTree())
+                {
+                    tx.setTree(looper.getSkimTree());
+                    tx.createBranch<ObjIdx>(lepidx);
+                    tx.createBranch<ObjIdx>(jetidx);
+                }
+                tx.setBranch<ObjIdx>(lepidx);
+                tx.setBranch<ObjIdx>(jetidx);
+                looper.fillSkim();
+            }
     }
 
     if ( doskim ) looper.saveSkim();
